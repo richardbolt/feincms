@@ -7,6 +7,7 @@ from __future__ import absolute_import
 import os
 import re
 
+from django.core.exceptions import SuspiciousOperation
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch.dispatcher import receiver
@@ -172,7 +173,7 @@ class MediaFileBase(models.Model, ExtensionsMixin, TranslatedObjectMixin):
         if self.file:
             try:
                 self.file_size = self.file.size
-            except (OSError, IOError, ValueError), e:
+            except (OSError, IOError, ValueError, SuspiciousOperation), e:
                 logger.error("Unable to read file size for %s: %s" % (self, e))
 
         super(MediaFileBase, self).save(*args, **kwargs)
